@@ -43,6 +43,6 @@ Ahora puedes ir a la carpeta **codes** y abrir el script **Clase 7.R** para repl
 ![](help/graphs/run_class.gif)
 
 ## 4. Notas
-* Los vídeos de la clase se encuentran [aquí](https://www.dropbox.com/sh/zwboolp0k7x3kp3/AACEY_K9l7Jo1a1EU7eJKJFda?dl=0). Nota: Dropbox no deja reproducir los vídeos más de 1 hora en linea, debe descargarlos para que pueda verlos completos.
+* Los vídeos de la clase se encuentran [aquí](https://www.dropbox.com/sh/k5bri2sa37tyr6k/AAACi_wdMkuIqo0Hr5thGItaa?dl=0). Nota: Dropbox no deja reproducir los vídeos más de 1 hora en linea, debe descargarlos para que pueda verlos completos.
 
 * Por favor hacer todas las correcciones ortográficas a este y los demás archivos **.Rmd** del repositorio.

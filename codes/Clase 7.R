@@ -37,15 +37,20 @@ rstudioapi::viewer(url = "help/loops-lapply.html")
 browseURL(url = "https://www.datacamp.com/community/tutorials/tutorial-on-loops-in-r", browser = getOption("browser")) # Datacamp
 
 #### 1.0.2 Cargar la base de datos
-browseURL(url = "https://www.datacamp.com/community/tutorials/tutorial-on-loops-in-r", browser = getOption("browser")) # Fuente
+browseURL(url = "http://www.odc.gov.co/SIDCO", browser = getOption("browser")) # Fuente
 odc = readRDS("data/original/odc.rds") %>% 
         subset(year>2010 & year <2019)
 panel = read.csv(file = "data/original/Panel municipios.csv")
 
 #### 1.1 Usando for
 "Imprimamos los numeros de 1 a 10"
-for (i in 1:10){
-        print(i)
+for (elemento in 2:10){
+     print(elemento)      
+}
+
+for(i in colnames(odc)){
+      print(i)
+      summary(odc[,i]) %>% print()
 }
 
 #### 1.2 Usando while 
@@ -59,7 +64,7 @@ while (i <= 6) {
 #### 1.3 Usando repeat
 "Generando numeros aleatorios mayores a 8"
 repeat{
-        i <- rnorm(1,10,2) %>% round(.)
+        i <- rnorm(n = 1,mean = 10,sd = 2) %>% round(.)
         print(i)
         if (i <= 8){
                 break
@@ -67,7 +72,7 @@ repeat{
 }
 
 #-------------------------------------------#
-# 2. Controles de flujo (if, else, ifelse)  #
+# 2. Controles de flujo (if, else, next, breack)  #
 #-------------------------------------------#
 ?Control 
 
@@ -77,31 +82,31 @@ vocal <- c("a","e","i","o","u")
 
 "Usando solo if"
 for (j in abc) {
+        print(j)
         if (j %in% vocal){
-                print(paste(j," - es una vocal"))
+                print(paste0(j," - es una vocal"))
         }
 }
 
 "Usando if y else"
-for (j in abc) {
-        if (j %in% vocal){
-                print(paste(j," - es una vocal"))
+for (letra in abc) {
+        if (letra %in% vocal){
+                print(paste(letra," - es una vocal"))
         }
         else {
-                print(paste(j," - NO es una vocal")) 
+                print(paste(letra," - NO es una vocal")) 
         } 
 }
 
 ### 2.2. Next
-for ( i in 1:ncol(panel)){
+for ( i in colnames(panel)){
         if (is.numeric(panel[,i]) == TRUE){
-                paste0(colnames(panel)[i],' es una variable numerica') %>% print()
+                paste0(i,' es una variable numerica') %>% print()
                 mean(panel[,i]) %>% print()
         } 
-        else {
-        paste0(colnames(panel)[i],' NO es una variable numerica') %>% print()
-        next
-        }  
+        if (is.factor(panel[,i]) == TRUE){
+                paste0(i,' es una variable logical') %>% print()
+        } 
 }
 
 ### 2.3. breack
@@ -130,14 +135,14 @@ browseURL(url = "https://www.datacamp.com/community/tutorials/r-tutorial-apply-f
 
 ### 3.1.1. Operaciones por columnas
 apply(X = panel,MARGIN = 2, FUN = mean)
-apply(X = panel,MARGIN = 2, function(y) is.character(y) %>% table())
-apply(X = panel,MARGIN = 2, function(y) as.numeric(y) %>% mean())
+apply(X = panel,MARGIN = 2, function(variable) is.character(variable) %>% table())
+apply(X = panel,MARGIN = 2, function(papa) table(papa))
 
 ### 3.1.2. Operaciones por filas
-apply(X = data,MARGIN = 1, function(y) is.na(y) %>% table())
+apply(X = data,MARGIN = 1, function(x) is.na(x) %>% table())
 
 ### 3.2. sapply()
-package_list = c('tidyverse','data.table') 
+package_list = c('tidyverse','data.table','caneca') 
 sapply(package_list , require , character.only = TRUE) # De ahora en adelante usaremos esto para llamar las funciones
 
 ### 3.3. lapply()
@@ -148,7 +153,7 @@ lapply(panel, function(x) is.na(x) %>% table()) # Contar los NA de cada columna 
 
 lapply(odc, function(x) summary(x)) # Descriptivas de cada columna
 
-list_panel = lapply(panel, function(x) as.numeric(x)) # Fijense que pasa con las coumnas del data.frame
+list_panel = lapply(panel, function(yuca) as.numeric(yuca)) # Fijense que pasa con las coumnas del data.frame
 
 new_odc = list_panel %>% data.frame() # Convertir en dataframe nuevamente
 
