@@ -23,6 +23,7 @@ browseURL(url = "http://www.odc.gov.co/SIDCO", browser = getOption("browser")) #
 odc = readRDS("data/input/odc.rds") %>% subset(year>2010 & year <2019)
 panel = read.csv(file = "data/input/Panel municipios.csv")
 
+#da igual poner = o <-
 
 #### 1.1 Usando for (Imprimamos los numeros de 1 a 5)
 vector =  1:5
