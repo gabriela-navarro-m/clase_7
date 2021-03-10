@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Taller de R: Estadística y programación</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Eduard Martinez" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/fc.css" rel="stylesheet" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+    <script src="libs/kePrint/kePrint.js"></script>
+    <link href="libs/lightable/lightable.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Taller de R: Estadística y programación
+## Lectura 7: Bucles
+### Eduard Martinez
+### Universidad de los Andes | <a href="https://github.com/taller-R">ECON-1302</a>
+
+---
+
+
+
+
+# Ya vimos
+
+- Visualización de información en R
+
+--
+
+# Hoy veremos 
+
+1. [Bucles o ciclos](#loops)
+
+2. [Controles de flujo](#flow)
+
+3. [Familia apply](#family)
+
+&lt;!-------------&gt;
+&lt;!--- loops ---&gt;
+&lt;!-------------&gt;
+---
+class: inverse, center, middle
+name: loops
+# Bucles o loops
+
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#FF007F' size=1px width=796px&gt;&lt;/html&gt;
+
+Un bucle o loops, en programación, es una secuencia de instrucciones de código que se ejecuta repetidas veces, hasta que la condición asignada a dicho bucle deja de cumplirse. Los tres bucles más utilizados en programación son el bucle while, el bucle for y el bucle do-while. [Wikipedia](https://es.wikipedia.org/wiki/Bucle_(programación)
+
+---
+# Estructura de un bucle (for, while y repeat)
+
+&lt;div align="center"&gt;
+&lt;img src="http://community.datacamp.com.s3.amazonaws.com/community/production/ckeditor_assets/pictures/132/content_flowchart1.png" height=500&gt;
+&lt;/div&gt;
+
+---
+# Estructura de un bucle (for)
+
+
+```r
+vector =  1:5
+
+for (i in vector){ # Vector sobre el que se va a aplicar el loop
+     i = i*i  # Sobreescribe i como el resultado de i*i
+     print(i) # Pinta el resultado sobre la consola
+}
+```
+
+```
+## [1] 1
+## [1] 4
+## [1] 9
+## [1] 16
+## [1] 25
+```
+
+`i` objeto local del loop (asume un valor diferente de `vector` en cada iteración). Cuando termina de ejecutarse la sentencia dentro de `{}`, el loop pasará al siguiente elmento del vector y así hasta que se haya ejecutado la senetencia sobre todos los elementos de `vector`.
+
+`vector` contiene los elementos sobre los que se va a iterar la sentencia del loop. 
+
+`{}` contiene la sentencia o acciones que se ejecutan dentro del loop.
+
+**Nota:** cada acción que se quiera ejecutar en la sentencia se debe escribir en una línea de código diferente (a menos que se use el operador `%&gt;%` o el operador `;`). 
+
+---
+# Estructura de un bucle (while)
+
+
+```r
+j = 1
+
+while (j &lt;= 5) { # condición
+        print(j*j) # pintar sobre la consola el producto de j*j
+        j = j+1 # sobreescribir j como j + 1
+}
+```
+
+```
+## [1] 1
+## [1] 4
+## [1] 9
+## [1] 16
+## [1] 25
+```
+
+
+`j` es el objeto local de este bucle. En cada iteración, el objeto `j` se va a sobrescribir hasta que termine de ejecutarse el loop.
+
+`()` contiene la condición que se debe cumplir para que se pueda ejecutar la sentencia.
+
+`{}` contiene la sentencia o acciones que se ejecutan dentro del loop.
+
+**Nota:** cada acción que se quiera ejecutar en la sentencia se debe escribir en una linea de código diferente (a menos que se use el operador `%&gt;%` o el operador `;`). 
+
+
+---
+# Estructura de un bucle (repeat)
+
+
+```r
+repeat{
+       m = rnorm(n=1 , mean=10 , sd=2) # generar un número aleatorio (media 10 , sd 2) 
+       print(m) # pintar el número sobre la consola
+       if (m &lt;= 8){ # condicionar a que ese número sea menor o igual a 8
+                   break # detener el loop si m es menor o igual a 8 
+       } 
+}
+```
+
+```
+## [1] 11.17106
+## [1] 11.41893
+## [1] 9.781393
+## [1] 9.093006
+## [1] 11.21177
+## [1] 6.364088
+```
+
+`m` es el objeto local de este bucle. En cada iteración, el objeto `m` se va a sobrescribir hasta que termine de ejecutarse el loop.
+
+`(m &lt;= 8)` contiene la condición que se debe cumplir para que se pueda continuar ejecutando el loop.
+
+`{}` contiene la sentencia o acciones que se ejecutan dentro del loop.
+
+**Nota:** cada acción que se quiera ejecutar en la sentencia se debe escribir en una línea de código diferente (a menos que se use el operador `%&gt;%` o el operador `;`). 
+
+---
+# Veamos un ejemplo (...)
+
+Tenemos una base de datos llamada `df`, que contiene 7 columnas con el código DANE de municipio y el porcentaje de la población que ha sufrido violencia entre 2014 y 2019. Ahora vamos a usar un loop para reemplazar cada columna por el valor en `%` (multiplicar cada columna por 100).
+
+&lt;div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:800px; "&gt;&lt;table class=" lightable-paper" style='font-family: "Arial Narrow", arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;'&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"&gt; cod_mpio &lt;/th&gt;
+   &lt;th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"&gt; violencia_2014 &lt;/th&gt;
+   &lt;th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"&gt; violencia_2015 &lt;/th&gt;
+   &lt;th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"&gt; violencia_2016 &lt;/th&gt;
+   &lt;th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"&gt; violencia_2017 &lt;/th&gt;
+   &lt;th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"&gt; violencia_2018 &lt;/th&gt;
+   &lt;th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"&gt; violencia_2019 &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 5001 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.05 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.09 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.02 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.03 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.01 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.01 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 5002 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.07 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.05 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.04 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.06 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.02 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.02 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 5003 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.06 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.03 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.03 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.03 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.04 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.02 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 5004 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.03 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.06 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.02 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.01 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.05 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.03 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 5005 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.04 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.03 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.03 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.04 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.07 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.03 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 5006 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.03 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.01 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.00 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.01 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.01 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.01 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;&lt;/div&gt;
+
+---
+# Veamos un ejemplo (...)
+
+El loop se aplica desde la columna 2 (porque la columna 1 contiene el código DANE) hasta la última columna del dataframe. 
+
+
+```r
+for(i in 2:ncol(df)){
+    df[,i] &lt;- df[,i]*100
+}
+```
+
+&lt;div align="center"&gt;
+&lt;img src="pics/loop.gif" height=500&gt;
+&lt;/div&gt;
+
+&lt;!--------------------------&gt;
+&lt;!--- Controles de flujo ---&gt;
+&lt;!--------------------------&gt;
+---
+class: inverse, center, middle
+name: #flow
+# Controles de flujo (if, else, next, breack) 
+
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#FF007F' size=1px width=796px&gt;&lt;/html&gt;
+
+Los condicionales `if` y `else` los usamos para definir una condición dentro de un lopp, la cual define cuando se debe o no, aplicar la sentencia dentro de `{}`.
+
+---
+# if
+
+
+```r
+number = seq(from=1, to=7 , by=1)
+pares = seq(from=2 , to=6 , by=2)
+
+for (j in number) { # Vector sobre el que se va a aplicar el loop
+
+       if (j %in% pares){ # condición para if
+             print(paste0(j," - es un # par")) # cuando se cumple la condición
+       }
+
+}
+```
+
+```
+## [1] "2 - es un # par"
+## [1] "4 - es un # par"
+## [1] "6 - es un # par"
+```
+
+La función `if` debe ir acompañada por una condición definida entre paréntesis `()` y seguidamente se debe definir entre `{}` la sentencia que se va a aplicar cuando se cumpla la condición. 
+
+**Nota:** para los valores `j` que no son pares, el loop no aplica ninguna sentencia. Es decir, como no definimos que hacer cuando el objeto `j` no sea par, el loop pasa al otro elemento de `number` sin aplicar ninguna acción sobre `j`.
+
+---
+# if y else
+
+
+```r
+for (j in number) { # Vector con los numeros del 1 al 7
+
+       if (j %in% pares){ # condición para if
+             print(paste0(j," - es un # par")) # cuando se cumple la condición
+       }
+  
+       else { # Cuando no se cumple la condición de if entonces...
+             print(paste0(j," - NO es un # par"))
+       }
+  
+}
+```
+
+```
+## [1] "1 - NO es un # par"
+## [1] "2 - es un # par"
+## [1] "3 - NO es un # par"
+## [1] "4 - es un # par"
+## [1] "5 - NO es un # par"
+## [1] "6 - es un # par"
+## [1] "7 - NO es un # par"
+```
+
+Ahora hemos definido dentro del loop que hacer cuando no se cumpla la condición que se definió para `if`.
+
+**Nota:** un loop puede tener más una condición `if` dentrol del cuerpo del loop, pero solo puede haber maximo un `else` por cada `if`. 
+
+---
+# next y break
+
+
+```r
+for (j in number) { # Vector con los numeros del 1 al 7
+
+       if (j &gt; 5) {
+           break
+       }
+       if (j %in% pares){ # condición
+             print(paste0(j," - es un # par")) # cuando se cumple la condición
+       }
+       else {
+             next 
+       }
+}
+```
+
+```
+## [1] "2 - es un # par"
+## [1] "4 - es un # par"
+```
+
+Se usa `next` dentro de sentencia para indicar al loop que debe saltar al siguiente elemento de `number`. 
+
+Se usa `break` dentro de sentencia para indicar al loop que debe detenerse. 
+
+&lt;!---------------------&gt;
+&lt;!--- Familia apply ---&gt;
+&lt;!---------------------&gt;
+---
+class: inverse, center, middle
+name: family
+# Familia apply
+
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#FF007F' size=1px width=796px&gt;&lt;/html&gt;
+
+---
+# apply, sapplay y lapply
+
+&lt;div align="center"&gt;
+&lt;img src="pics/familia_apply.png" height=400&gt;
+&lt;/div&gt;
+
+---
+# apply()
+
+&lt;div align="center"&gt;
+&lt;img src="pics/apply.png" height=400&gt;
+&lt;/div&gt;
+
+Podemos usar esta función para aplicar operaciones a filas y/o columnas de un dataframe. Como resultado obtenemos un objeto de tipo vector, lista o array. En los argumentos, `X` va el objeto, `MARGIN` va la dimensión (1 si se quiere aplicar la función por filas y 2 si se quiere aplicar por columnas) y en `FUN` va la función que se quiere aplicar al dataframe.
+
+---
+# Veamos un ejemplo (...)
+
+&lt;div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:180px; overflow-x: scroll; width:800px; "&gt;&lt;table class=" lightable-paper" style='font-family: "Arial Narrow", arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;'&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"&gt; cod_mpio &lt;/th&gt;
+   &lt;th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"&gt; viol_2014 &lt;/th&gt;
+   &lt;th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"&gt; viol_2015 &lt;/th&gt;
+   &lt;th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"&gt; viol_2016 &lt;/th&gt;
+   &lt;th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"&gt; viol_2017 &lt;/th&gt;
+   &lt;th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"&gt; viol_2018 &lt;/th&gt;
+   &lt;th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"&gt; viol_2019 &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 5001 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 9 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 5002 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 5003 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 5004 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 5005 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 5006 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;&lt;/div&gt;
+
+Veamos el valor promedio de la población victimas de violencia entre 2014-2019 (columnas).
+
+
+```r
+apply(df[,2:7],MARGIN=2,FUN=mean)
+```
+
+```
+## viol_2014 viol_2015 viol_2016 viol_2017 viol_2018 viol_2019 
+##  4.666667  4.500000  2.333333  3.000000  3.333333  2.000000
+```
+
+Veamos el promedio de cada municipio durante 2014-2019 (filas)
+
+
+```r
+apply(df[,2:7],MARGIN=1,FUN=mean)
+```
+
+```
+## [1] 3.500000 4.333333 3.500000 3.333333 4.000000 1.166667
+```
+
+---
+# lapply() y sapply()
+
+&lt;div align="center"&gt;
+&lt;img src="http://adv-r.had.co.nz/diagrams/lapply.png" height=400&gt;
+&lt;/div&gt;
+
+Podemos usar `lapply()` para aplicar operaciones a las columnas de un dataframe, los elementos de un vector o los elementos de una lista. Como resultado obtenemos una lista. 
+
+---
+# Veamos un ejemplo (...)
+
+
+```r
+lapply(df[,2:7],summary)
+```
+
+```
+## $viol_2014
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   3.000   3.250   4.500   4.667   5.750   7.000 
+## 
+## $viol_2015
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    1.00    3.00    4.00    4.50    5.75    9.00 
+## 
+## $viol_2016
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   0.000   2.000   2.500   2.333   3.000   4.000 
+## 
+## $viol_2017
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    1.00    1.50    3.00    3.00    3.75    6.00 
+## 
+## $viol_2018
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   1.000   1.250   3.000   3.333   4.750   7.000 
+## 
+## $viol_2019
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    1.00    1.25    2.00    2.00    2.75    3.00
+```
+
+&lt;!---------------------&gt;
+&lt;!---    Hoy vimos  ---&gt;
+&lt;!---------------------&gt;
+---
+class: inverse, center, middle
+
+# Hoy vimos...
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#FF007F' size=1px width=796px&gt;&lt;/html&gt;
+
+---
+#  Hoy vimos...
+
+- ☑ [Bucles o ciclos](#loops)
+
+- ☑ [Controles de flujo](#flow)
+
+- ☑ [Familia apply](#family)
+
+---
+# Vamos a replicar la clase...
+
+&lt;div align="center"&gt;
+&lt;img src="pics/run_class.gif" height=550&gt;
+&lt;/div&gt;
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
